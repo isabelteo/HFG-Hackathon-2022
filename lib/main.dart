@@ -13,7 +13,7 @@ void main() {
 const String page1 = "Main";
 const String page2 = "Chat";
 const String page3 = "Profile";
-const String title = "HFG APP";
+const String title = "On The House";
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
