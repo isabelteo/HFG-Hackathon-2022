@@ -51,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _profile = const Profile();
     _pages = [_chat,_main,_profile];
     _currentIndex = 0;
-    _currentPage = _profile;
+    _currentPage = _chat;
   }
 
   void _changeTab(int index) {
