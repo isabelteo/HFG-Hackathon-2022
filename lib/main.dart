@@ -1,46 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:hfg/model/user.dart';
+import 'package:hfg/page/edit_profile_page.dart';
+import 'package:hfg/utils/user_preferences.dart';
+import 'package:hfg/widget/appbar_widget.dart';
+import 'package:hfg/widget/button_widget.dart';
+import 'package:hfg/widget/profile_widget.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
+const String page1 = "Main";
+const String page2 = "Chat";
+const String page3 = "Profile";
+const String title = "HFG APP";
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    return const MaterialApp(
+      title: title,
+      home: MyHomePage(title: title),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
 
   @override
@@ -48,68 +36,254 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  late List<Widget> _pages;
+  late Widget _chat;
+  late Widget _main;
+  late Widget _profile;
+  late int _currentIndex;
+  late Widget _currentPage;
 
-  void _incrementCounter() {
+  @override
+  void initState() {
+    super.initState();
+    _main = const Page1();
+    _chat = const Page2();
+    _profile = const Profile();
+    _pages = [_chat,_main,_profile];
+    _currentIndex = 0;
+    _currentPage = _profile;
+  }
+
+  void _changeTab(int index) {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      _currentIndex = index;
+      _currentPage = _pages[index];
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+      body: _currentPage,
+      bottomNavigationBar: BottomNavigationBar(
+          onTap: (index) {
+            _changeTab(index);
+          },
+          currentIndex: _currentIndex,
+          items: const [
+            BottomNavigationBarItem(
+              label: "Chat",
+              icon: Icon(Icons.wechat_rounded),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+        BottomNavigationBarItem(
+          label: "Main",
+          icon: Icon(Icons.home),
+        ),
+            BottomNavigationBarItem(
+              label: "Profile",
+              icon: Icon(Icons.person),
             ),
-          ],
+          ]),
+      drawer: Drawer(
+        child: Container(
+          margin: const EdgeInsets.only(top: 20.0),
+          child: Column(
+            children: <Widget>[
+              _navigationItemListTitle("Profile", 2),
+              _navigationItemListTitle("Main", 1),
+              _navigationItemListTitle("Chat", 0),
+            ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+  Widget _navigationItemListTitle(String title, int index) {
+    return ListTile(
+      title: Text(
+        '$title Page',
+        style: TextStyle(color: Colors.blue[400], fontSize: 22.0),
+      ),
+      onTap: () {
+        Navigator.pop(context);
+        _changeTab(index);
+      },
     );
   }
 }
+
+class Page1 extends StatelessWidget {
+  const Page1({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text('$page1 Page', style: Theme.of(context).textTheme.headline6),
+    );
+  }
+}
+
+class Page2 extends StatelessWidget {
+  const Page2({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text('$page2 Page', style: Theme.of(context).textTheme.headline6),
+    );
+  }
+}
+
+class Profile extends StatelessWidget {
+  const Profile({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+      final user = UserPreferences.myUser;
+
+      return new Scaffold(
+            appBar: buildAppBar(context),
+            body: ListView(
+              physics: BouncingScrollPhysics(),
+              children: [
+                ProfileWidget(
+                  imagePath: user.imagePath,
+                  onClicked: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => EditProfilePage()),
+                    );
+                  },
+                ),
+                const SizedBox(height: 24),
+                buildName(user),
+                const SizedBox(height: 24),
+                Center(child: buildDonateButton()),
+                const SizedBox(height: 24),
+                buildAbout(user),
+                const SizedBox(height: 24),
+                buildHousing(user),
+                const SizedBox(height: 24),
+                buildJob(user),
+                const SizedBox(height: 24),
+                buildHobbies(user),
+                const SizedBox(height: 24),
+                buildBirthday(user),
+              ],
+            ),
+          );
+    }
+
+    Widget buildName(User user) => Column(
+      children: [
+        Text(
+          user.name,
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          user.country,
+          style: TextStyle(color: Colors.grey),
+        )
+      ],
+    );
+
+    Widget buildDonateButton() => ButtonWidget(
+      text: 'Handle Your Financials',
+      onClicked: () {},
+    );
+
+    Widget buildJob(User user) => Container(
+      padding: EdgeInsets.symmetric(horizontal: 48),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Job',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            user.job,
+            style: TextStyle(fontSize: 14, height: 1.4),
+          ),
+        ],
+      ),
+    );
+
+    Widget buildHobbies(User user) => Container(
+      padding: EdgeInsets.symmetric(horizontal: 48),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Hobbies',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            user.hobbies,
+            style: TextStyle(fontSize: 14, height: 1.4),
+          ),
+        ],
+      ),
+    );
+
+    Widget buildBirthday(User user) => Container(
+      padding: EdgeInsets.symmetric(horizontal: 48),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Birthday',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            user.birthday,
+            style: TextStyle(fontSize: 14, height: 1.4),
+          ),
+        ],
+      ),
+    );
+
+    Widget buildHousing(User user) => Container(
+      padding: EdgeInsets.symmetric(horizontal: 48),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Housing Situation',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            user.housing,
+            style: TextStyle(fontSize: 16, height: 1.4),
+          ),
+        ],
+      ),
+    );
+
+    Widget buildAbout(User user) => Container(
+      padding: EdgeInsets.symmetric(horizontal: 48),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'About',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            user.about,
+            style: TextStyle(fontSize: 16, height: 1.4),
+          ),
+        ],
+      ),
+    );
+
+  }
