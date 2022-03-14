@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:hfg/model/user.dart';
+import 'package:hfg/page/chat_page.dart';
+import 'package:hfg/page/home_page.dart';
 import 'package:hfg/page/edit_profile_page.dart';
 import 'package:hfg/utils/user_preferences.dart';
 import 'package:hfg/widget/appbar_widget.dart';
 import 'package:hfg/widget/button_widget.dart';
 import 'package:hfg/widget/profile_widget.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() {
-  runApp(const MyApp());
+  initializeDateFormatting().then((_) => runApp(const MyApp()));
 }
 
 const String page1 = "Main";
 const String page2 = "Chat";
 const String page3 = "Profile";
-const String title = "HFG APP";
+const String title = "On The House";
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -46,12 +49,12 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _main = const Page1();
-    _chat = const Page2();
+    _main = const Home();
+    _chat = const Chat();
     _profile = const Profile();
     _pages = [_chat,_main,_profile];
     _currentIndex = 0;
-    _currentPage = _profile;
+    _currentPage = _chat;
   }
 
   void _changeTab(int index) {
@@ -116,147 +119,29 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class Page1 extends StatelessWidget {
-  const Page1({Key? key}) : super(key: key);
+class Home extends StatelessWidget {
+  const Home({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        home: PostList(),
+    return const MaterialApp(
+        home: HomePage(),
         debugShowCheckedModeBanner: false
     );
   }
 }
 
-class PostList extends StatefulWidget {
-  @override
-  _PostListState createState() => _PostListState();
-}
-
-class _PostListState extends State<PostList> {
-  // save data
-  final List<String> _postList = <String>[];
-  // text field
-  final TextEditingController _textFieldController = TextEditingController();
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListView(children: _getItems()),
-      floatingActionButton: FloatingActionButton(
-          onPressed: () => _displayDialog(context),
-          tooltip: 'Post',
-          child: Icon(Icons.add)),
-    );
-  }
-
-  void _addPostItem(String title) {
-    setState(() {
-      _postList.add(title);
-    });
-    _textFieldController.clear();
-  }
-
-  Widget _buildPostItem(String title) {
-    return Container(
-        child: Column(
-            children: [
-              Padding(
-                  padding: EdgeInsets.only(bottom: 20.0),
-                  child: Text(
-                    title,
-                    style: TextStyle(fontSize: 20),)
-              ),
-              Row(
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: () {},
-                    label: const Text('CHAT'),
-                    icon: const Icon(
-                      Icons.chat,
-                      size: 24.0,
-                    ),
-                    style: ElevatedButton.styleFrom(
-                        primary: Colors.blue,
-                        textStyle: const TextStyle(
-                            fontWeight: FontWeight.bold)),
-                  ),
-                  const SizedBox(width: 20),
-                  ElevatedButton.icon(
-                    onPressed: () {},
-                    label: const Text('DONATE'),
-                    icon: const Icon(
-                      Icons.volunteer_activism,
-                      size: 24.0,
-                    ),
-                    style: ElevatedButton.styleFrom(
-                        primary: Colors.blue,
-                        textStyle: const TextStyle(
-                            fontWeight: FontWeight.bold)),
-                  )
-                ],
-              )
-            ]
-        ),
-        margin: const EdgeInsets.all(5.0),
-        padding: const EdgeInsets.only(top:50.0, right: 10.0, left: 10.0, bottom: 10.0),
-        decoration: const BoxDecoration(
-          color: Color(0xFFC3DFE5),
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-        )
-    );
-  }
-
-  Future<Future> _displayDialog(BuildContext context) async {
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Share your Story'),
-            content: TextField(
-              controller: _textFieldController,
-              decoration: const InputDecoration(hintText: 'Whats on your mind'),
-            ),
-            actions: <Widget>[
-              // add button
-              FlatButton(
-                child: const Text('ADD'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  _addPostItem(_textFieldController.text);
-                },
-              ),
-              // Cancel button
-              FlatButton(
-                child: const Text('CANCEL'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              )
-            ],
-          );
-        }
-    );
-  }
-
-  List<Widget> _getItems() {
-    final List<Widget> _postWidgets = <Widget>[];
-    for (String title in _postList) {
-      _postWidgets.add(_buildPostItem(title));
-    }
-    return _postWidgets;
-  }
-}
-
-class Page2 extends StatelessWidget {
-  const Page2({Key? key}) : super(key: key);
+class Chat extends StatelessWidget {
+  const Chat({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('$page2 Page', style: Theme.of(context).textTheme.headline6),
-    );
+      return const MaterialApp(
+        home: ChatPage(),
+      );
   }
 }
+
 
 class Profile extends StatelessWidget {
   const Profile({Key? key}) : super(key: key);
