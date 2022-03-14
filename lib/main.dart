@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hfg/model/user.dart';
 import 'package:hfg/page/chat_page.dart';
+import 'package:hfg/page/home_page.dart';
 import 'package:hfg/page/edit_profile_page.dart';
 import 'package:hfg/utils/user_preferences.dart';
 import 'package:hfg/widget/appbar_widget.dart';
@@ -123,8 +124,9 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('$page1 Page', style: Theme.of(context).textTheme.headline6),
+    return const MaterialApp(
+        home: HomePage(),
+        debugShowCheckedModeBanner: false
     );
   }
 }
