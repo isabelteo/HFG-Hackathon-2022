@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:hfg/model/user.dart';
+import 'package:hfg/page/chat_page.dart';
 import 'package:hfg/page/edit_profile_page.dart';
 import 'package:hfg/utils/user_preferences.dart';
 import 'package:hfg/widget/appbar_widget.dart';
 import 'package:hfg/widget/button_widget.dart';
 import 'package:hfg/widget/profile_widget.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() {
-  runApp(const MyApp());
+  initializeDateFormatting().then((_) => runApp(const MyApp()));
 }
 
 const String page1 = "Main";
@@ -46,8 +48,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _main = const Page1();
-    _chat = const Page2();
+    _main = const Home();
+    _chat = const Chat();
     _profile = const Profile();
     _pages = [_chat,_main,_profile];
     _currentIndex = 0;
@@ -116,8 +118,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class Page1 extends StatelessWidget {
-  const Page1({Key? key}) : super(key: key);
+class Home extends StatelessWidget {
+  const Home({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -127,16 +129,17 @@ class Page1 extends StatelessWidget {
   }
 }
 
-class Page2 extends StatelessWidget {
-  const Page2({Key? key}) : super(key: key);
+class Chat extends StatelessWidget {
+  const Chat({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('$page2 Page', style: Theme.of(context).textTheme.headline6),
-    );
+      return const MaterialApp(
+        home: ChatPage(),
+      );
   }
 }
+
 
 class Profile extends StatelessWidget {
   const Profile({Key? key}) : super(key: key);
